@@ -96,7 +96,7 @@ export default class GoogleChooser extends React.Component {
 
   createPicker(oauthToken) {
     const googleViewId = google.picker.ViewId[this.props.viewId];
-    const view = new window.google.picker.View(googleViewId);
+    const view = new window.google.picker.DocsView(googleViewId);
 
     if (this.props.mimeTypes) {
       view.setMimeTypes(this.props.mimeTypes.join(','))
@@ -104,6 +104,10 @@ export default class GoogleChooser extends React.Component {
 
     if (!view) {
       throw new Error('Can\'t find view by viewId');
+    }
+
+    if (this.props.selectFolderEnabled){
+      view.setSelectFolderEnabled(true);
     }
 
     const picker = new window.google.picker.PickerBuilder()
@@ -129,12 +133,13 @@ export default class GoogleChooser extends React.Component {
   }
 
   render() {
+    let label = this.props.label && this.props.label.length ? this.props.label : 'Open google chooser';
     return (
       <div onClick={this.onChoose}>
         {
           this.props.children ?
             this.props.children :
-            <button>Open google chooser</button>
+            <button className={this.props.className}>{label}</button>
         }
       </div>
     );
